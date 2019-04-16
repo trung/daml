@@ -1,6 +1,8 @@
 steps:
   - checkout: self
 
+  - bash: |
+      exit -1
   - bash: ci/configure-bazel.sh
     displayName: 'Configure Bazel'
     env:

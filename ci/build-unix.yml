@@ -2,6 +2,8 @@ parameters:
   name: ''
 
 steps:
+  - bash: |
+      exit -1
   - checkout: self
 
   - bash: ci/dev-env-install.sh
@@ -19,7 +21,7 @@ steps:
 
   - bash: ./fmt.sh --test
     displayName: 'Platform-agnostic lints and checks'
-    condition: eq(variables['Agent.OS'], 'Linux')
+    condition: and(succeeded(), eq(variables['Agent.OS'], 'Linux'))
 
   - bash: ci/configure-bazel.sh
     displayName: 'Configure Bazel'

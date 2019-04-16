@@ -110,3 +110,23 @@ jobs:
           assetUploadMode: 'replace'
           addChangeLog: false
           isPrerelease: true
+
+  - job: notify
+    dependsOn: ["release"]
+    condition: always() #eq(variables['Build.SourceBranchName'], 'master')
+    variables:
+      success: |
+        $[ and(eq(dependencies.linux.result, "Succeeded"),
+               eq(dependencies.macos.result, "Succeeded"),
+               eq(dependencies.windows.result, "Succeeded"),
+               eq(dependencies.release.result, "Succeeded")) ]
+    pool:
+      vmImage: "Ubuntu-16.04"
+    steps:
+      - bash: |
+          set -euo pipefail
+          MESSAGE=$(echo "$(Build.SourceVersionMessage)" | head -1)
+          curl -XPOST \
+               -H 'Content-type: application/json' \
+               --data "{\"text\":\"$(success): <https://dev.azure.com/digitalasset/daml/_build/results?buildId=$(Build.BuildId)|$MESSAGE>\n\"}" \
+               $(Slack.URL)
