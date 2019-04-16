@@ -213,7 +213,8 @@ class EventConverterSpec
             Set("Alice"),
             Set("Alice"),
             Set("Alice"),
-            ImmArray(Transaction.NodeId.unsafeFromIndex(1))
+            ImmArray(Transaction.NodeId.unsafeFromIndex(1)),
+            asVersionedValueOrThrow(Lf.ValueUnit)
           ))
 
       val node1 = (
@@ -312,7 +313,10 @@ class EventConverterSpec
         true,
         ImmArray("#txId:2"),
         Set("giver", "receiver"),
-        Set("giver", "receiver")
+        Set("giver", "receiver"),
+        asVersionedValueOrThrow(
+          Lf.ValueContractId(Lf.AbsoluteContractId("#txId:3"))
+        )
       )
       val events: Events[EventId, Lf.AbsoluteContractId, Lf.VersionedValue[Lf.AbsoluteContractId]] =
         Events(
@@ -323,13 +327,16 @@ class EventConverterSpec
               Ref.Identifier(
                 "0d25e199ed26977b3082864c62f8d154ca6042ed521712e2b3eb172dc79c87a2",
                 "Test:TriProposal"),
-              "Accept",
+              "TriProposalAccept",
               asVersionedValueOrThrow(Lf.ValueUnit),
               Set("receiver", "giver"),
               true,
               ImmArray("#txId:3"),
               Set("receiver", "giver", "operator"),
-              Set("receiver", "giver", "operator")
+              Set("receiver", "giver", "operator"),
+              asVersionedValueOrThrow(
+                Lf.ValueContractId(Lf.AbsoluteContractId("#txId:3"))
+              )
             ),
             "#txId:3" -> CreateEvent(
               Lf.AbsoluteContractId("#txId:3"),
@@ -390,12 +397,13 @@ class EventConverterSpec
             moduleName = "Test",
             entityName = "TriProposal")),
         "#6:0",
-        "Accept",
+        "TriProposalAccept",
         Some(Value(Value.Sum.Unit(Empty()))),
         Vector("receiver", "giver"),
         consuming = true,
         Vector("receiver", "giver", "operator"),
-        List(created.eventId)
+        List(created.eventId),
+        Some(Value(ContractId("#txId:3")))
       )
       val topLevelExercise = ExercisedEvent(
         "#txId:0",
@@ -421,7 +429,8 @@ class EventConverterSpec
         Vector("giver"),
         consuming = true,
         Vector("giver", "receiver"),
-        List(nestedExercise.eventId)
+        List(nestedExercise.eventId),
+        Some(Value(ContractId("#txId:3")))
       )
 
       val expected = TransactionTreeNodes(

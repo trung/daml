@@ -314,7 +314,8 @@ class PostgresDaoSpec
                 Set(SimpleString.assertFromString("Alice"), SimpleString.assertFromString("Bob")),
                 Set(SimpleString.assertFromString("Alice"), SimpleString.assertFromString("Bob")),
                 Set(SimpleString.assertFromString("Alice"), SimpleString.assertFromString("Bob")),
-                ImmArray.empty
+                ImmArray.empty,
+                VersionedValue(ValueVersions.acceptedVersions.head, ValueText("some return value")),
               )),
             ImmArray(s"event$id")
           ),

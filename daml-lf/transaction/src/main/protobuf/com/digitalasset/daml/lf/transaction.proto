@@ -86,6 +86,7 @@ message NodeExercise {
     repeated string signatories = 9;
     repeated string controllers = 10;
     com.digitalasset.daml.lf.value.ContractId contract_id_struct = 11;
+    com.digitalasset.daml.lf.value.VersionedValue return_value = 12;
 }
 
 message NodeLookupByKey {

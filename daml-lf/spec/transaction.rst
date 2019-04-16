@@ -4,7 +4,7 @@
 DAML-LF Transaction Specification
 =================================
 
-**version 5, 12 March 2019**
+**version 6, 15 April 2019**
 
 This specification, in concert with the ``transaction.proto``
 machine-readable definition, defines a format for _transactions_, to be
@@ -154,6 +154,8 @@ This table lists every version of this specification in ascending order
 |                  4 |      2019-02-14 |
 +--------------------+-----------------+
 |                  5 |      2019-03-12 |
++--------------------+-----------------+
+|                  6 |      2019-04-15 |
 +--------------------+-----------------+
 
 message Transaction
@@ -448,6 +450,12 @@ If ``contract_id_struct``'s ``relative`` field is ``true``, then:
    ``NodeCreate``'s ``stakeholders`` field, and
 3. ``signatories`` must have the same elements as the corresponding
    ``NodeCreate``'s ``signatories`` field.
+
+*since version 6*
+
+As of version 6, this new field is required to be non-empty:
+
+* `message VersionedValue`_ result_value
 
 message NodeLookupByKey
 ^^^^^^^^^^^^^^^^^^^^^^^

@@ -131,7 +131,8 @@ object TransactionSpec {
       Set.empty,
       Set.empty,
       Set.empty,
-      children
+      children,
+      V.ValueUnit
     )
 
   val dummyCreateNode: NodeCreate[String, Value[String]] =

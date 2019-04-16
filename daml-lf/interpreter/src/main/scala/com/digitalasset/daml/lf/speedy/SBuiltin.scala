@@ -718,10 +718,16 @@ object SBuiltin {
   }
 
   /** $endExercise[T] :: Token -> () */
-  final case class SBUEndExercise(templateId: TypeConName) extends SBuiltin(1) {
+  final case class SBUEndExercise(templateId: TypeConName) extends SBuiltin(2) {
     def execute(args: util.ArrayList[SValue], machine: Machine): Unit = {
       checkToken(args.get(0))
-      machine.ptx = machine.ptx.endExercises._2
+      val exerciseResult = args.get(1).toValue
+      machine.ptx = machine.ptx
+        .endExercises(asVersionedValue(exerciseResult) match {
+          case Left(err) => crash(err)
+          case Right(x) => x
+        })
+        ._2
       machine.ctrl = CtrlValue(SUnit(()))
       checkAborted(machine.ptx)
     }

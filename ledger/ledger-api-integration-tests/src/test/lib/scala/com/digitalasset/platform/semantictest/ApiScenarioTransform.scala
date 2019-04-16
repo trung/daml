@@ -117,7 +117,10 @@ class ApiScenarioTransform(ledgerId: String, packages: Map[Ref.PackageId, Ast.Pa
         convertEvId: String => EventId)
       : Either[StatusRuntimeException, P.ExerciseEvent[EventId, AbsoluteContractId]] = {
       val witnesses = P.parties(exercisedEvent.witnessParties)
-      toLfVersionedValue(exercisedEvent.getChoiceArgument).map { value =>
+      for {
+        value <- toLfVersionedValue(exercisedEvent.getChoiceArgument)
+        result <- toLfVersionedValue(exercisedEvent.getExerciseResult)
+      } yield {
         P.ExerciseEvent(
           AbsoluteContractId(exercisedEvent.contractId),
           Ref.Identifier(
@@ -134,8 +137,8 @@ class ApiScenarioTransform(ledgerId: String, packages: Map[Ref.PackageId, Ast.Pa
           ImmArray(exercisedEvent.childEventIds.map(convertEvId)),
           // conversion is imperfect as stakeholders are not determinable from events yet
           witnesses,
-          witnesses
-        )
+          witnesses,
+          result)
       }
     }
     val converted: Either[RuntimeException, Map[String, P.Event[String, AbsoluteContractId]]] =

@@ -151,27 +151,31 @@ object TransactionCoder {
         }
 
       case e: NodeExercises[Nid, Cid, Val] =>
-        encodeVal(e.chosenValue).map {
-          case (vversion, arg) =>
-            val exBuilder =
-              TransactionOuterClass.NodeExercise
-                .newBuilder()
-                .setChoice(e.choiceId)
-                .setTemplateId(ValueCoder.encodeIdentifier(e.templateId, Some(vversion))._2)
-                .setChosenValue(arg)
-                .setConsuming(e.consuming)
-                .setContractIdOrStruct(encodeCid, transactionVersion, e.targetCoid)(
-                  _.setContractId(_),
-                  _.setContractIdStruct(_))
-                .addAllActors(e.actingParties.map(_.underlyingString).asJava)
-                .addAllChildren(e.children.map(encodeNid).toList.asJava)
-                .addAllControllers(e.controllers.map(_.underlyingString).asJava)
-                .addAllSignatories(e.signatories.map(_.underlyingString).asJava)
-                .addAllStakeholders(e.stakeholders.map(_.underlyingString).asJava)
+        for {
+          retValue <- encodeVal(e.exerciseResult)
+          argValue <- encodeVal(e.chosenValue)
+        } yield {
+          val (_, exerciseResult) = retValue
+          val (vversion, arg) = argValue
+          val exBuilder =
+            TransactionOuterClass.NodeExercise
+              .newBuilder()
+              .setChoice(e.choiceId)
+              .setTemplateId(ValueCoder.encodeIdentifier(e.templateId, Some(vversion))._2)
+              .setChosenValue(arg)
+              .setConsuming(e.consuming)
+              .setContractIdOrStruct(encodeCid, transactionVersion, e.targetCoid)(
+                _.setContractId(_),
+                _.setContractIdStruct(_))
+              .addAllActors(e.actingParties.map(_.underlyingString).asJava)
+              .addAllChildren(e.children.map(encodeNid).toList.asJava)
+              .addAllControllers(e.controllers.map(_.underlyingString).asJava)
+              .addAllSignatories(e.signatories.map(_.underlyingString).asJava)
+              .addAllStakeholders(e.stakeholders.map(_.underlyingString).asJava)
+              .setReturnValue(exerciseResult)
 
-            nodeBuilder.setExercise(exBuilder).build()
+          nodeBuilder.setExercise(exBuilder).build()
         }
-
       case nlbk: NodeLookupByKey[Cid, Val] =>
         if (transactionVersion precedes minKeyOrLookupByKey)
           Left(EncodeError(transactionVersion, isTooOldFor = "NodeLookupByKey transaction nodes"))
@@ -278,6 +282,7 @@ object TransactionCoder {
           signatories <- toPartySet(protoExe.getSignatoriesList)
           stakeholders <- toPartySet(protoExe.getStakeholdersList)
           actingParties <- toPartySet(protoExe.getActorsList)
+          rv <- decodeVal(protoExe.getReturnValue)
         } yield
           (
             ni,
@@ -292,7 +297,8 @@ object TransactionCoder {
               stakeholders = stakeholders,
               signatories = signatories,
               controllers = controllers,
-              children = children
+              children = children,
+              exerciseResult = rv
             ))
       case NodeTypeCase.LOOKUP_BY_KEY =>
         val protoLookupByKey = protoNode.getLookupByKey

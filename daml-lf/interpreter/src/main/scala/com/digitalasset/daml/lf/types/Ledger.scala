@@ -227,7 +227,8 @@ object Ledger {
           stakeholders = nex.stakeholders,
           signatories = nex.signatories,
           controllers = nex.controllers,
-          children = nex.children.map(NodeId(commitPrefix, _))
+          children = nex.children.map(NodeId(commitPrefix, _)),
+          exerciseResult = makeAbsolute(commitPrefix, nex.exerciseResult)
         )
       case nlbk: NodeLookupByKey.WithTxValue[ContractId] =>
         NodeLookupByKey(

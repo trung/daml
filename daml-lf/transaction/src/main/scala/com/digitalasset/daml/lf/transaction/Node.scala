@@ -82,12 +82,13 @@ object Node {
       stakeholders: Set[Party],
       signatories: Set[Party],
       controllers: Set[Party],
-      children: ImmArray[Nid])
+      children: ImmArray[Nid],
+      exerciseResult: Val)
       extends GenNode[Nid, Cid, Val] {
     override def mapContractIdAndValue[Cid2, Val2](
         f: Cid => Cid2,
         g: Val => Val2): NodeExercises[Nid, Cid2, Val2] =
-      copy(targetCoid = f(targetCoid), chosenValue = g(chosenValue))
+      copy(targetCoid = f(targetCoid), chosenValue = g(chosenValue), exerciseResult = g(exerciseResult))
 
     override def mapNodeId[Nid2](f: Nid => Nid2): NodeExercises[Nid2, Cid, Val] =
       copy(
@@ -168,11 +169,13 @@ object Node {
               stakeholders2,
               signatories2,
               controllers2,
-              _) =>
+              _,
+              exerciseResult2) =>
             import ne._
             targetCoid === targetCoid2 && templateId == templateId2 && choiceId == choiceId2 &&
             consuming == consuming2 && actingParties == actingParties2 && chosenValue === chosenValue2 &&
-            stakeholders == stakeholders2 && signatories == signatories2 && controllers == controllers2
+            stakeholders == stakeholders2 && signatories == signatories2 && controllers == controllers2 &&
+            exerciseResult == exerciseResult2
           case _ => false
         }
       case nl: NodeLookupByKey[Cid, Val] =>
