@@ -149,7 +149,6 @@ class SemanticTester(
                 case scenarioCreateNode: NodeCreate[
                       AbsoluteContractId,
                       Tx.Value[AbsoluteContractId]] =>
-
                   val (ledgerCreateEvent, remainingLedgerEventIds) =
                     popEvent[CreateEvent[AbsoluteContractId, Tx.Value[AbsoluteContractId]]](
                       "create event",
@@ -195,14 +194,14 @@ class SemanticTester(
                       scenarioNode,
                       state.remainingLedgerEventIds)
 
-
                   // ** TODO ** Breaks the tail-recursion. The implementation should be "fixed".
                   // iterate overt the children FIRST because we need the Coid mapping updated to check the exercise
                   // event
-                  val nextScenarioCoidToLedgerCoid = go(state.copy(
-                    remainingLedgerEventIds = FrontStack(ledgerExerciseEvent.children),
-                    remainingScenarioNodeIds = FrontStack(scenarioExercisesNode.children),
-                  ))
+                  val nextScenarioCoidToLedgerCoid = go(
+                    state.copy(
+                      remainingLedgerEventIds = FrontStack(ledgerExerciseEvent.children),
+                      remainingScenarioNodeIds = FrontStack(scenarioExercisesNode.children),
+                    ))
 
                   // create synthetic exercise event, again rewriting the appropriate bits. note that we intentionally
                   // blank the children because we compare them in the recursive call anyway.
@@ -216,7 +215,8 @@ class SemanticTester(
                     ImmArray.empty,
                     scenarioExercisesNode.stakeholders intersect scenarioWitnesses(scenarioNodeId),
                     scenarioWitnesses(scenarioNodeId),
-                    scenarioExercisesNode.exerciseResult.mapContractId(nextScenarioCoidToLedgerCoid),
+                    scenarioExercisesNode.exerciseResult.mapContractId(
+                      nextScenarioCoidToLedgerCoid),
                   )
                   val ledgerExerciseEventToCompare =
                     ledgerExerciseEvent.copy(children = ImmArray.empty, stakeholders = Set.empty)
