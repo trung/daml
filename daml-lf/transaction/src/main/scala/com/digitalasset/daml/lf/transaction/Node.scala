@@ -88,7 +88,10 @@ object Node {
     override def mapContractIdAndValue[Cid2, Val2](
         f: Cid => Cid2,
         g: Val => Val2): NodeExercises[Nid, Cid2, Val2] =
-      copy(targetCoid = f(targetCoid), chosenValue = g(chosenValue), exerciseResult = g(exerciseResult))
+      copy(
+        targetCoid = f(targetCoid),
+        chosenValue = g(chosenValue),
+        exerciseResult = g(exerciseResult))
 
     override def mapNodeId[Nid2](f: Nid => Nid2): NodeExercises[Nid2, Cid, Val] =
       copy(
