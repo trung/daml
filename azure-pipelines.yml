@@ -84,6 +84,7 @@ jobs:
         persistCredentials: true
       - bash: |
           set -euxo pipefail
+          exit -1
           git tag v$(cat VERSION)
           git push origin v$(cat VERSION)
           mkdir $(Build.StagingDirectory)/release
