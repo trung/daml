@@ -138,7 +138,8 @@ class ApiScenarioTransform(ledgerId: String, packages: Map[Ref.PackageId, Ast.Pa
           // conversion is imperfect as stakeholders are not determinable from events yet
           witnesses,
           witnesses,
-          result)
+          result
+        )
       }
     }
     val converted: Either[RuntimeException, Map[String, P.Event[String, AbsoluteContractId]]] =

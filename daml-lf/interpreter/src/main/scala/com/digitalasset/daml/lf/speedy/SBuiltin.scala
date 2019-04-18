@@ -717,7 +717,11 @@ object SBuiltin {
     }
   }
 
-  /** $endExercise[T] :: Token -> () */
+  /** $endExercise[T]
+    *    :: Token
+    *    -> Value   (result of the exercise)
+    *    -> ()
+    */
   final case class SBUEndExercise(templateId: TypeConName) extends SBuiltin(2) {
     def execute(args: util.ArrayList[SValue], machine: Machine): Unit = {
       checkToken(args.get(0))
