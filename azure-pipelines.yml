@@ -115,11 +115,7 @@ jobs:
     dependsOn: ["release"]
     condition: always() #eq(variables['Build.SourceBranchName'], 'master')
     variables:
-      success: |
-        $[ and(eq(dependencies.linux.result, "Succeeded"),
-               eq(dependencies.macos.result, "Succeeded"),
-               eq(dependencies.windows.result, "Succeeded"),
-               eq(dependencies.release.result, "Succeeded")) ]
+      success: $[ and(eq(dependencies.linux.result, "Succeeded"), eq(dependencies.macos.result, "Succeeded"), eq(dependencies.windows.result, "Succeeded"), eq(dependencies.release.result, "Succeeded")) ]
     pool:
       vmImage: "Ubuntu-16.04"
     steps:
