@@ -1,3 +1,6 @@
+.. Copyright (c) 2019 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+.. SPDX-License-Identifier: Apache-2.0
+
 .. _integration-kit:
 
 DAML Integration Kit - PRE-ALPHA
@@ -365,3 +368,4 @@ Benchmarking a DAML Ledger
 - explain how to use the ``ledger-api-bench`` tool to evaluate the
   performance of your implementation of the Ledger API
   (`GitHub issue <https://github.com/digital-asset/daml/issues/671>`__).
+
