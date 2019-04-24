@@ -46,6 +46,33 @@ sealed abstract class Value[+Cid] extends Product with Serializable {
       case ValueMap(x) => ValueMap(x.mapValue(_.mapContractId(f)))
     }
 
+  // TODO (Nick Smith) - Still not tail-recursive
+  def mapContractIdOpt[Cid2](f: Cid => Option[Cid2]): Option[Value[Cid2]] = {
+    @tailrec def _flatten[A](in: ImmArray[Option[A]], out: ImmArray.ImmArraySeq[A]): Option[ImmArray[A]] =
+      in match {
+        case ImmArray()                  => Some(out.toImmArray)
+        case ImmArrayCons(None, _)       => None
+        case ImmArrayCons(Some(v), rest) => _flatten(rest, out :+ v)
+      }
+    def flatten[A](in: ImmArray[Option[A]]): Option[ImmArray[A]] = _flatten(in, ImmArray.ImmArraySeq.empty)
+
+    this match {
+      case prim @ (ValueBool(_) | ValueDate(_) | ValueDecimal(_) | ValueInt64(_) | ValueParty(_) |
+        ValueText(_) | ValueTimestamp(_) | ValueUnit) =>
+        Some(prim.asInstanceOf[Value[Cid2]])
+      case ValueContractId(coid) => f(coid).map(ValueContractId(_))
+      case ValueRecord(id, fs) =>
+        flatten(fs.map({ case (lbl, value) => value.mapContractIdOpt(f).map((lbl, _))})).map(ValueRecord(id, _))
+      case ValueTuple(fs) =>
+        flatten(fs.map({ case (lbl, value) => value.mapContractIdOpt(f).map((lbl, _))})).map(ValueTuple(_))
+      case ValueVariant(id, variant, value) => value.mapContractIdOpt(f).map(ValueVariant(id, variant, _))
+      case ValueOptional(x) => x.map(_.mapContractIdOpt(f)).map(ValueOptional(_))
+      case ValueList(vs) => flatten(vs.toImmArray.map(_.mapContractIdOpt(f))).map(n => ValueList(FrontStack(n)))
+      case ValueMap(m) => flatten(m.values.map(_.mapContractIdOpt(f))).map(m.keys.zip(_).toSeq.toMap).map(m2 =>
+        ValueMap(SortedLookupList(m2)))
+    }
+  }
+
   /** returns a list of validation errors: if the result is non-empty the value is
     * _not_ serializable.
     *
@@ -150,6 +177,8 @@ object Value {
   final case class VersionedValue[+Cid](version: ValueVersion, value: Value[Cid]) {
     def mapContractId[Cid2](f: Cid => Cid2): VersionedValue[Cid2] =
       this.copy(value = value.mapContractId(f))
+    def mapContractIdOpt[Cid2](f: Cid => Option[Cid2]): Option[VersionedValue[Cid2]] =
+      value.mapContractIdOpt(f).map(newValue => this.copy(value = newValue))
 
     /** Increase the `version` if appropriate for `languageVersions`. */
     def typedBy(languageVersions: LanguageVersion*): VersionedValue[Cid] = {

@@ -115,7 +115,9 @@ class SemanticTester(
               s"Expected $what to match scenario node $scenarioNode but got none.")
         }
 
+
       // walk through the scenario nodes and ledger events
+      @tailrec
       def go(state: TestScenarioState): Map[AbsoluteContractId, AbsoluteContractId] =
         state.remainingScenarioNodeIds match {
           // we're done with scenario nodes, we should also be done with ledger events
@@ -194,47 +196,52 @@ class SemanticTester(
                       scenarioNode,
                       state.remainingLedgerEventIds)
 
-                  // ** TODO ** Breaks the tail-recursion. The implementation should be "fixed".
-                  // iterate overt the children FIRST because we need the Coid mapping updated to check the exercise
-                  // event
-                  val nextScenarioCoidToLedgerCoid = go(
-                    state.copy(
-                      remainingLedgerEventIds = FrontStack(ledgerExerciseEvent.children),
-                      remainingScenarioNodeIds = FrontStack(scenarioExercisesNode.children),
-                    ))
+                  // Check if the contract ID of the result of exercising the contract choice can be mapped.
+                  // If the contract ID cannot be mapped, then delay the check until the children have been processed
+                  // which will add the Contract ID mappings required to test the exercise result.
+                  scenarioExercisesNode.exerciseResult.mapContractIdOpt(state.scenarioCoidToLedgerCoid.get) match {
+                    case Some(exerciseResultValue) =>
 
-                  // create synthetic exercise event, again rewriting the appropriate bits. note that we intentionally
-                  // blank the children because we compare them in the recursive call anyway.
-                  val scenarioExerciseEvent = ExerciseEvent(
-                    state.scenarioCoidToLedgerCoid(scenarioExercisesNode.targetCoid),
-                    scenarioExercisesNode.templateId,
-                    scenarioExercisesNode.choiceId,
-                    scenarioExercisesNode.chosenValue.mapContractId(nextScenarioCoidToLedgerCoid),
-                    scenarioExercisesNode.actingParties,
-                    scenarioExercisesNode.consuming,
-                    ImmArray.empty,
-                    scenarioExercisesNode.stakeholders intersect scenarioWitnesses(scenarioNodeId),
-                    scenarioWitnesses(scenarioNodeId),
-                    scenarioExercisesNode.exerciseResult.mapContractId(
-                      nextScenarioCoidToLedgerCoid),
-                  )
-                  val ledgerExerciseEventToCompare =
-                    ledgerExerciseEvent.copy(children = ImmArray.empty, stakeholders = Set.empty)
-                  val comparedScenarioExerciseEvent =
-                    scenarioExerciseEvent.copy(stakeholders = Set.empty)
-                  if (comparedScenarioExerciseEvent != ledgerExerciseEventToCompare) {
-                    throw SemanticTesterError(
-                      reference,
-                      s"Expected exercise event $comparedScenarioExerciseEvent but got $ledgerExerciseEventToCompare"
-                    )
-                  }
+                      // create synthetic exercise event, again rewriting the appropriate bits. note that we intentionally
+                      // blank the children because we compare them in the recursive call anyway.
+                      val scenarioExerciseEvent = ExerciseEvent(
+                        state.scenarioCoidToLedgerCoid(scenarioExercisesNode.targetCoid),
+                        scenarioExercisesNode.templateId,
+                        scenarioExercisesNode.choiceId,
+                        scenarioExercisesNode.chosenValue.mapContractId(state.scenarioCoidToLedgerCoid),
+                        scenarioExercisesNode.actingParties,
+                        scenarioExercisesNode.consuming,
+                        ImmArray.empty,
+                        scenarioExercisesNode.stakeholders intersect scenarioWitnesses(scenarioNodeId),
+                        scenarioWitnesses(scenarioNodeId),
+                        exerciseResultValue,
+                      )
+                      val ledgerExerciseEventToCompare =
+                        ledgerExerciseEvent.copy(children = ImmArray.empty, stakeholders = Set.empty)
+                      val comparedScenarioExerciseEvent =
+                        scenarioExerciseEvent.copy(stakeholders = Set.empty)
+                      if (comparedScenarioExerciseEvent != ledgerExerciseEventToCompare) {
+                        throw SemanticTesterError(
+                          reference,
+                          s"Expected exercise event $comparedScenarioExerciseEvent but got $ledgerExerciseEventToCompare"
+                        )
+                      }
+                      state.copy(
+                        remainingScenarioNodeIds = remainingScenarioNodeIds,
+                        remainingLedgerEventIds = remainingLedgerEventIds,
+                      )
 
-                  state.copy(
-                    scenarioCoidToLedgerCoid = nextScenarioCoidToLedgerCoid,
-                    remainingScenarioNodeIds = remainingScenarioNodeIds,
-                    remainingLedgerEventIds = remainingLedgerEventIds
-                  )
-              }
+                    case None =>
+                      // iterate overt the children FIRST because we need the Coid mapping updated to check the exercise
+                      // event
+                      state.copy(
+                        remainingScenarioNodeIds = state.remainingScenarioNodeIds.++:(scenarioExercisesNode.children),
+                        remainingLedgerEventIds = state.remainingLedgerEventIds.++:(ledgerExerciseEvent.children),
+                      )
+
+                }
+
+            }
             // keep looping
             go(nextState)
         }
