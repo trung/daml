@@ -14,6 +14,9 @@ HEAD — ongoing
   and exercising a choice on it within the same transaction. This can be used to
   implement "callable updates" (aka functions of type ``Update a`` that can be
   called from the Ledger API via a contract).
+- Add documentation for :doc:`/daml-integration-kit/index`, which explains
+  what the DAML Integration Kit is, what state it is in, and how it is going
+  to evolve.
 
 0.12.7 — 2019-04-17
 -------------------
