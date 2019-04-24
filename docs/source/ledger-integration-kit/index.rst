@@ -14,18 +14,14 @@ TODO
 
    /tools/ledger-api-test-tool/index
 
-.. _ledger-integration-kit_testing:
-
-Testing a DAML Ledger
+Testing a DAML ledger
 ---------------------
 
 TODO
 
 See more in :doc:`Ledger API Test Tool </tools/ledger-api-test-tool/index>`.
 
-.. _ledger-integration-kit_benchmarking:
-
-Benchmarking a DAML Ledger
+Benchmarking a DAML ledger
 --------------------------
 
 TODO
