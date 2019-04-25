@@ -16,7 +16,7 @@ the :doc:`/concepts/ledger-model/index` and the
 `DAML-LF specification <https://github.com/digital-asset/daml/blob/master/daml-lf/spec/daml-lf-1.rst>`_.
 Theoretically, you could
 implement such a server from scratch following the above documentation.
-Practically, we though strongly recommend to use our integration kit and follow
+Practically, we strongly recommend using our integration kit and following
 the guides below for
 :ref:`implementing <integration-kit_implementing>`,
 :ref:`deploying <integration-kit_deploying>`,
