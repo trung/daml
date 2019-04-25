@@ -89,7 +89,7 @@ BETA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/660>`
   they need to integrate DAML with their ledger of choice completely on their
   own.
 
-  Before reaching BETA status, we expect to have
+  Before reaching BETA status, we expect to have:
 
   - hardened our test tooling,
   - built tooling for benchmarking DAML ledgers,
