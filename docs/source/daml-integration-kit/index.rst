@@ -33,9 +33,10 @@ Status and roadmap
 ******************
 
 The current status of the integration kit is PRE-ALPHA. We expect it to evolve
-to ALPHA soon, BETA later, and GA quite a bit later. The roadmap below
-explains what we mean by these different statuses, and what's missing to
-progress.
+to ALPHA soon, BETA later, and GA quite a bit later.
+The roadmap below explains what we mean by these different statuses, and
+what's missing to progress.
+Changes to the DAML Integration Kit are described in the :doc:`/support/release-notes`.
 
 PRE-ALPHA (current status)
   We develop the DAML Integration Kit in an open-first model. The PRE-ALPHA
