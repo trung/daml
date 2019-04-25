@@ -68,19 +68,12 @@ ALPHA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/658>
 
   That said: we highly value your feedback and input to direct our attention
   to where it provides the most value!
+  You can get into contact with us using the feedback form on this
+  documentation page or by creating issues or pull-requests against the `digital-asset/daml
+  <https://github.com/digital-asset/daml>`__ GitHub repository.
 
-  Below is the list of known missing work to reach ALPHA status. You can
-  watch this GitHub issue to track our progress towards completing it.
-
-  - Complete the **TODO (ALPHA)** items in this documentation.
-  - Release the artifacts referenced in this documentation jointly with the
-    DAML SDK and create self-contained DAML integration example in the
-    `digital-asset/daml-on-x-example
-    <https://github.com/digital-asset/daml-on-x-example>`__ GitHub repository.
-    (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/139>`__)
-  - Implement the support for ledger-effective-time checks in the
-    ``participant-state`` interface
-    (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/385>`__)
+  Use this `GitHub milestone <https://github.com/digital-asset/daml/milestone/4>`__
+  to see the work outstanding to reach ALPHA status.
 
 
 BETA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/660>`__)
@@ -96,6 +89,9 @@ BETA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/660>`
   - completed several integrations of DAML for different ledgers
   - implemented uniform *administrative DAML ledger access* to provide a
     portable way for testing DAML applications against different DAML ledgers
+
+  Use this `GitHub milestone <https://github.com/digital-asset/daml/milestone/13>`__
+  to see the work outstanding to reach BETA status.
 
 GA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/661>`__)
   For us GA (General Availability) means that there are several
@@ -177,6 +173,9 @@ simplify their implementation:
   It builds on our Scala libraries and demonstrates how they
   can be assembled to serve the Ledger API and validate DAML transactions.
 
+  **TODO (ALPHA):** actually create this repository
+  (`GitHub issue <https://github.com/digital-asset/daml/issues/139>`__)!
+
   For ledgers where data is shared between all participant nodes, we
   recommend using this example as a starting point for implementing your
   server and validator.
@@ -228,9 +227,9 @@ to implement your own server and validator.
    `digital-asset/daml <https://github.com/digital-asset/daml>`__ repository
    to add your ledger to the `DAML Ledger overview`_.
 
-Use the feedback form on this documentation page or GitHub issues on the
+If you need help, then feel free to use the feedback form on this documentation page or GitHub issues on the
 `digital-asset/daml <https://github.com/digital-asset/daml>`__ repository to
-get into contact with us. Questions and feedback welcome!
+get into contact with us.
 
 
 Library infrastructure overview
