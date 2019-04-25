@@ -47,7 +47,7 @@ PRE-ALPHA (current status)
 ALPHA (`tracking GitHub issue <https://github.com/digital-asset/daml/issues/658>`__)
   Once we reach ALPHA status, the DAML Integration Kit is ready to be used by
   courageous third-parties. If you are one of these pioneers, then we are glad
-  to have you on-board, provided your are OK with the following caveats:
+  to have you on-board, provided you're OK with the following caveats:
 
   - The architecture includes everything required to run DAML Applications in
     production. However, it misses support for testing DAML Applications in a
