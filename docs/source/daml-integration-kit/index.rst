@@ -120,7 +120,7 @@ Architectural overview
 ======================
 
 We explain how to implement a DAML ledger backed by a specific
-ledger `X`. This can be a proper distributed ledger or also just a database.
+ledger `X`. The backing ledger can be a proper distributed ledger or also just a database.
 The goal of this implementation is to allow multiple DAML applications, which are potentially run by
 different entities, to execute multi-party workflows using the ledger `X`. We
 illustrate this in the following diagram.
