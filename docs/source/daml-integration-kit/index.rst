@@ -188,7 +188,7 @@ of context to be learned before you can decide on your architecture and
 implement it.
 
 
-Getting started
+Prerequisite knowledge
 ---------------
 
 We recommend the following three steps to gain the knowledge necessary to
